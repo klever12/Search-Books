@@ -84,104 +84,180 @@ class BookApp:
 
         print("\n")
 
+        # start performing book search
         while searching_books:
             user_choice = input("Would you like to search by title(t), "
                                 "author(a), or publishing company(p)? Or "
                                 "would you like to cancel search(c)?\n") \
                 .strip()
 
+            # search by title
             if user_choice == "T" or user_choice == "t":
-                search_term = "+intitle"
+                search_term = "intitle:"
 
                 book_to_search = input("Enter title to search for: ").strip()
                 book_to_search = ' '.join(book_to_search.split())
                 book_to_search = book_to_search.replace(" ", "+")
 
-                resp = urlopen(api + book_to_search + search_term +
+                resp = urlopen(api + search_term + book_to_search +
                                max_results)
                 book_data = json.load(resp)
 
-                for x in range(5):
-                    book_title = book_data["items"][x]["volumeInfo"]\
-                        .get('title')
-                    book_author = book_data["items"][x]["volumeInfo"]\
-                        .get('authors')
-                    book_publisher = book_data["items"][x]["volumeInfo"]\
-                        .get('publisher')
-
-                    if book_title is None:
-                        book_title = "-No Title-"
+                if book_data['totalItems'] == 0:
+                    print("Sorry. No books were found with that title. ")
+                else:
+                    if book_data['totalItems'] < 5:
+                        number_books_found = book_data['totalItems']
+                        self.searched_books = {}
                     else:
-                        book_title = book_data["items"][x]["volumeInfo"]["title"]
+                        number_books_found = 5
 
-                    if book_author is None:
-                        book_author = ["-No author-"]
-                    else:
-                        book_author = book_data["items"][x]["volumeInfo"]["authors"]
+                    for x in range(number_books_found):
+                        book_title = book_data["items"][x]["volumeInfo"]\
+                            .get('title')
+                        book_author = book_data["items"][x]["volumeInfo"]\
+                            .get('authors')
+                        book_publisher = book_data["items"][x]["volumeInfo"]\
+                            .get('publisher')
 
-                    if book_publisher is None:
-                        book_publisher = "-No Publisher-"
-                    else:
-                        book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+                        if book_title is None:
+                            book_title = "-No Title-"
+                        else:
+                            book_title = book_data["items"][x]["volumeInfo"]["title"]
 
-                    book_information = [book_title, book_author,
-                                        book_publisher]
+                        if book_author is None:
+                            book_author = ["-No author-"]
+                        else:
+                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
 
-                    self.searched_books[x + 1] = book_information
+                        if book_publisher is None:
+                            book_publisher = "-No Publisher-"
+                        else:
+                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
 
-                self.print_searched_books()
-                self.add_to_reading_list()
-                searching_books = False
+                        book_information = [book_title, book_author,
+                                            book_publisher]
 
+                        self.searched_books[x + 1] = book_information
+
+                    self.print_searched_books()
+                    self.add_to_reading_list()
+                    searching_books = False
+
+            # search by author
             elif user_choice == "A" or user_choice == "a":
-                search_term = "+inauthor"
+                search_term = "inauthor:"
 
                 author_to_search = input("Enter author to search for: ")\
                     .strip()
                 author_to_search = ' '.join(author_to_search.split())
                 author_to_search = author_to_search.replace(" ", "+")
 
-                resp = urlopen(api + author_to_search + search_term +
+                resp = urlopen(api + search_term + author_to_search +
                                max_results)
                 book_data = json.load(resp)
 
-                for x in range(5):
-                    book_title = book_data["items"][x]["volumeInfo"] \
-                        .get('title')
-                    book_author = book_data["items"][x]["volumeInfo"] \
-                        .get('authors')
-                    book_publisher = book_data["items"][x]["volumeInfo"] \
-                        .get('publisher')
-
-                    if book_title is None:
-                        book_title = "-No Title-"
+                if book_data['totalItems'] == 0:
+                    print("Sorry. No books were found with that title. ")
+                else:
+                    if book_data['totalItems'] < 5:
+                        number_books_found = book_data['totalItems']
+                        self.searched_books = {}
                     else:
-                        book_title = book_data["items"][x]["volumeInfo"]["title"]
+                        number_books_found = 5
 
-                    if book_author is None:
-                        book_author = ["-No author-"]
-                    else:
-                        book_author = book_data["items"][x]["volumeInfo"]["authors"]
+                    for x in range(number_books_found):
+                        book_title = book_data["items"][x]["volumeInfo"] \
+                            .get('title')
+                        book_author = book_data["items"][x]["volumeInfo"] \
+                            .get('authors')
+                        book_publisher = book_data["items"][x]["volumeInfo"] \
+                            .get('publisher')
 
-                    if book_publisher is None:
-                        book_publisher = "-No Publisher-"
-                    else:
-                        book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+                        if book_title is None:
+                            book_title = "-No Title-"
+                        else:
+                            book_title = book_data["items"][x]["volumeInfo"]["title"]
 
-                    book_information = [book_title, book_author,
-                                        book_publisher]
+                        if book_author is None:
+                            book_author = ["-No author-"]
+                        else:
+                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
 
-                    self.searched_books[x + 1] = book_information
+                        if book_publisher is None:
+                            book_publisher = "-No Publisher-"
+                        else:
+                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
 
-                self.print_searched_books()
-                self.add_to_reading_list()
-                searching_books = False
+                        book_information = [book_title, book_author,
+                                            book_publisher]
 
+                        self.searched_books[x + 1] = book_information
+
+                    self.print_searched_books()
+                    self.add_to_reading_list()
+                    searching_books = False
+
+            # search by publisher
             elif user_choice == "P" or user_choice == "p":
-                print("Search by publishing company picked!")
+                search_term = "inpublisher:"
+
+                publisher_to_search = input("Enter publisher to search for: ")\
+                    .strip()
+                publisher_to_search = ' '.join(publisher_to_search.split())
+                publisher_to_search = publisher_to_search.replace(" ", "+")
+
+                resp = urlopen(api + search_term + publisher_to_search +
+                               max_results)
+                book_data = json.load(resp)
+
+                if book_data['totalItems'] == 0:
+                    print("Sorry. No books were found with that title. ")
+                else:
+                    if book_data['totalItems'] < 5:
+                        number_books_found = book_data['totalItems']
+                        self.searched_books = {}
+                    else:
+                        number_books_found = 5
+
+                    for x in range(number_books_found):
+                        book_title = book_data["items"][x]["volumeInfo"] \
+                            .get('title')
+                        book_author = book_data["items"][x]["volumeInfo"] \
+                            .get('authors')
+                        book_publisher = book_data["items"][x]["volumeInfo"] \
+                            .get('publisher')
+
+                        if book_title is None:
+                            book_title = "-No Title-"
+                        else:
+                            book_title = book_data["items"][x]["volumeInfo"]["title"]
+
+                        if book_author is None:
+                            book_author = ["-No author-"]
+                        else:
+                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
+
+                        if book_publisher is None:
+                            book_publisher = "-No Publisher-"
+                        else:
+                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+
+                        book_information = [book_title, book_author,
+                                            book_publisher]
+
+                        self.searched_books[x + 1] = book_information
+
+                    self.print_searched_books()
+                    self.add_to_reading_list()
+                    searching_books = False
+
+            # cancel book search
             elif user_choice == "C" or user_choice == "c":
                 print("Book search canceled.\n")
                 searching_books = False
+
+            # user input was invalid
             else:
                 print("Sorry. That was an invalid option.\n")
 
