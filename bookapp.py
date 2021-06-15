@@ -263,8 +263,77 @@ class BookApp:
 
     def add_to_reading_list(self):
         """This method adds books the user chooses to the reading list"""
-        # TODO
-        print("Perform add books to reading list!\n")
+
+        wants_to_add_books = True
+
+        # start by asking user if they'd like to add to reading list
+        while wants_to_add_books:
+            user_choice = input("Would you like to add any of these books to"
+                                " your reading list? \n Yes(y) or No(n): ")\
+                .strip()
+
+            if user_choice == "Y" or user_choice == "y":
+                adding_books = True
+
+                # start add to reading list process
+                while adding_books:
+                    self.print_searched_books()
+                    curr_searched_books = self.get_searched_books()
+                    curr_reading_list = self.get_reading_list()
+                    num_of_searched_books = len(curr_searched_books)
+
+                    if bool(curr_reading_list) is False:
+                        num_of_reading_list = 1
+                    else:
+                        num_of_reading_list = len(curr_reading_list) + 1
+
+                    try:
+                        print("Note: Duplicates will be removed")
+                        books_to_add = list(map(int,
+                                            input("Which books would you like"
+                                                  " to add to your reading"
+                                                  " list? Separated with space"
+                                                  " if multiple, Enter "
+                                                  "number "
+                                                  "corresponding to book(s) in"
+                                                  " list to add: ").split()))
+
+                    except ValueError:
+                        print("Sorry. Please enter numbers corresponding to"
+                              " books in the list. \n")
+                        self.print_searched_books()
+                        break
+
+                    books_to_add = list(set(books_to_add))
+
+                    for num in books_to_add:
+                        if 1 <= num <= num_of_searched_books:
+                            pass
+                        else:
+                            print("Sorry. Number(s) input is not one of the"
+                                  " options in list.")
+                            books_to_add = False
+                            break
+
+                    if books_to_add is False:
+                        break
+                    else:
+                        for book in books_to_add:
+                            self.reading_list[num_of_reading_list] = \
+                                curr_searched_books[book]
+                            num_of_reading_list = num_of_reading_list + 1
+                        self.print_reading_list()
+                        adding_books = False
+                        wants_to_add_books = False
+
+            # user does not want to add to reading list
+            elif user_choice == "N" or user_choice == "n":
+                wants_to_add_books = False
+
+            # user input was invalid
+            else:
+                print("Sorry. That was an invalid option.\n")
+                self.print_searched_books()
 
 
 if __name__ == '__main__':
