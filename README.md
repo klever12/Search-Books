@@ -8,7 +8,7 @@ Here is the key file in the project:
 
 ## Project Setup 
 
-In order to clone and run this repository, you will need to have Git. Then in the command line, you can do:  
+In order to clone and run this repository, you will need to have Git and [Python 3.x](https://www.python.org/download/releases/3.0/). Then in the command line, you can do:  
 
 
 ```bash
@@ -17,7 +17,7 @@ git clone https://github.com/klever12/Search-Books
 # Go into the repository
 cd Search-Books
 # Run the bookapp.py script
-python bookapp.py
+python3 bookapp.py
 ```
 
 Alternatively, one can run the scripts using an IDE through the IDE's *Run* or *Build* command. 
