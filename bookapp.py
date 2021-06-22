@@ -1,5 +1,6 @@
 import json
 from urllib.request import urlopen
+from urllib.error import URLError
 from termcolor import colored
 
 
@@ -19,8 +20,9 @@ class BookApp:
 
         # Starts the application
         while self.app_quit is not True:
-            user_choice = input(colored("Would you like to search for a book(b), "
-                                "see your reading list(r), or quit app(q)?\n", 'red')) \
+            user_choice = input(
+                colored("Would you like to search for a book(b), "
+                        "see your reading list(r), or quit app(q)?\n", 'red')) \
                 .strip()
 
             if user_choice == "B" or user_choice == "b":
@@ -62,9 +64,9 @@ class BookApp:
             for x in curr_reading_list:
                 authors = ", ".join(curr_reading_list[x][1])
                 print(colored(str(x) + "- Title: " + curr_reading_list[x][0] +
-                      ", Author(s): " + authors +
-                      ", Publishing Company: " +
-                      curr_reading_list[x][2] + "\n", 'blue'))
+                              ", Author(s): " + authors +
+                              ", Publishing Company: " +
+                              curr_reading_list[x][2] + "\n", 'blue'))
 
     def print_searched_books(self):
         curr_searched_books = self.get_searched_books()
@@ -73,8 +75,8 @@ class BookApp:
         for x in curr_searched_books:
             authors = ", ".join(curr_searched_books[x][1])
             print(colored(str(x) + "- Title: " + curr_searched_books[x][0] +
-                  ", Author(s): " + authors + ", Publishing Company: " +
-                  curr_searched_books[x][2] + "\n", 'blue'))
+                          ", Author(s): " + authors + ", Publishing Company: " +
+                          curr_searched_books[x][2] + "\n", 'blue'))
 
     def search_books(self):
         """This method searches for books using the Google Books API"""
@@ -87,9 +89,10 @@ class BookApp:
 
         # start performing book search
         while searching_books:
-            user_choice = input(colored("Would you like to search by title(t), "
-                                "author(a), or publishing company(p)? Or "
-                                "would you like to cancel search(c)?\n", 'red')) \
+            user_choice = input(
+                colored("Would you like to search by title(t), "
+                        "author(a), or publishing company(p)? Or "
+                        "would you like to cancel search(c)?\n", 'red')) \
                 .strip()
 
             # search by title
@@ -101,12 +104,21 @@ class BookApp:
                 book_to_search = ' '.join(book_to_search.split())
                 book_to_search = book_to_search.replace(" ", "+")
 
-                resp = urlopen(api + search_term + book_to_search +
-                               max_results)
+                try:
+                    resp = urlopen(api + search_term + book_to_search +
+                                   max_results)
+                except URLError:
+                    print(colored("Sorry. No internet connection detected. "
+                                  "Please check network connection and try "
+                                  "again.\n", 'red'))
+                    break
+
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print(colored("Sorry. No books were found with that title. ", 'red'))
+                    print(
+                        colored("Sorry. No books were found with that title. ",
+                                'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -115,27 +127,31 @@ class BookApp:
                         number_books_found = 5
 
                     for x in range(number_books_found):
-                        book_title = book_data["items"][x]["volumeInfo"]\
+                        book_title = book_data["items"][x]["volumeInfo"] \
                             .get('title')
-                        book_author = book_data["items"][x]["volumeInfo"]\
+                        book_author = book_data["items"][x]["volumeInfo"] \
                             .get('authors')
-                        book_publisher = book_data["items"][x]["volumeInfo"]\
+                        book_publisher = book_data["items"][x]["volumeInfo"] \
                             .get('publisher')
 
                         if book_title is None:
                             book_title = "-No Title-"
                         else:
-                            book_title = book_data["items"][x]["volumeInfo"]["title"]
+                            book_title = book_data["items"][x]["volumeInfo"][
+                                "title"]
 
                         if book_author is None:
                             book_author = ["-No author-"]
                         else:
-                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
+                            book_author = book_data["items"][x]["volumeInfo"][
+                                "authors"]
 
                         if book_publisher is None:
                             book_publisher = "-No Publisher-"
                         else:
-                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+                            book_publisher = \
+                                book_data["items"][x]["volumeInfo"][
+                                    'publisher']
 
                         book_information = [book_title, book_author,
                                             book_publisher]
@@ -151,17 +167,26 @@ class BookApp:
                 search_term = "inauthor:"
 
                 author_to_search = input(colored("Enter author to search for: "
-                                                 , 'red'))\
+                                                 , 'red')) \
                     .strip()
                 author_to_search = ' '.join(author_to_search.split())
                 author_to_search = author_to_search.replace(" ", "+")
 
-                resp = urlopen(api + search_term + author_to_search +
-                               max_results)
+                try:
+                    resp = urlopen(api + search_term + author_to_search +
+                                   max_results)
+                except URLError:
+                    print(colored("Sorry. No internet connection detected. "
+                                  "Please check network connection and try "
+                                  "again.\n", 'red'))
+                    break
+
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print(colored("Sorry. No books were found with that title. ", 'red'))
+                    print(
+                        colored("Sorry. No books were found with that title. ",
+                                'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -180,17 +205,21 @@ class BookApp:
                         if book_title is None:
                             book_title = "-No Title-"
                         else:
-                            book_title = book_data["items"][x]["volumeInfo"]["title"]
+                            book_title = book_data["items"][x]["volumeInfo"][
+                                "title"]
 
                         if book_author is None:
                             book_author = ["-No author-"]
                         else:
-                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
+                            book_author = book_data["items"][x]["volumeInfo"][
+                                "authors"]
 
                         if book_publisher is None:
                             book_publisher = "-No Publisher-"
                         else:
-                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+                            book_publisher = \
+                                book_data["items"][x]["volumeInfo"][
+                                    'publisher']
 
                         book_information = [book_title, book_author,
                                             book_publisher]
@@ -205,17 +234,27 @@ class BookApp:
             elif user_choice == "P" or user_choice == "p":
                 search_term = "inpublisher:"
 
-                publisher_to_search = input(colored("Enter publisher to search for: ", 'red'))\
+                publisher_to_search = input(
+                    colored("Enter publisher to search for: ", 'red')) \
                     .strip()
                 publisher_to_search = ' '.join(publisher_to_search.split())
                 publisher_to_search = publisher_to_search.replace(" ", "+")
 
-                resp = urlopen(api + search_term + publisher_to_search +
-                               max_results)
+                try:
+                    resp = urlopen(api + search_term + publisher_to_search +
+                                   max_results)
+                except URLError:
+                    print(colored("Sorry. No internet connection detected. "
+                                  "Please check network connection and try "
+                                  "again.\n", 'red'))
+                    break
+
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print(colored("Sorry. No books were found with that title. ", 'red'))
+                    print(
+                        colored("Sorry. No books were found with that title. ",
+                                'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -234,17 +273,21 @@ class BookApp:
                         if book_title is None:
                             book_title = "-No Title-"
                         else:
-                            book_title = book_data["items"][x]["volumeInfo"]["title"]
+                            book_title = book_data["items"][x]["volumeInfo"][
+                                "title"]
 
                         if book_author is None:
                             book_author = ["-No author-"]
                         else:
-                            book_author = book_data["items"][x]["volumeInfo"]["authors"]
+                            book_author = book_data["items"][x]["volumeInfo"][
+                                "authors"]
 
                         if book_publisher is None:
                             book_publisher = "-No Publisher-"
                         else:
-                            book_publisher = book_data["items"][x]["volumeInfo"]['publisher']
+                            book_publisher = \
+                                book_data["items"][x]["volumeInfo"][
+                                    'publisher']
 
                         book_information = [book_title, book_author,
                                             book_publisher]
@@ -271,8 +314,9 @@ class BookApp:
 
         # start by asking user if they'd like to add to reading list
         while wants_to_add_books:
-            user_choice = input(colored("Would you like to add any of these books to"
-                                " your reading list? \n Yes(y) or No(n): ", 'red'))\
+            user_choice = input(
+                colored("Would you like to add any of these books to"
+                        " your reading list? \n Yes(y) or No(n): ", 'red')) \
                 .strip()
 
             if user_choice == "Y" or user_choice == "y":
@@ -291,19 +335,23 @@ class BookApp:
                         num_of_reading_list = len(curr_reading_list) + 1
 
                     try:
-                        print(colored("Note: Duplicates will be removed", 'red'))
+                        print(
+                            colored("Note: Duplicates will be removed", 'red'))
                         books_to_add = list(map(int,
-                                            input(colored("Which books would you like"
-                                                  " to add to your reading"
-                                                  " list? Separated with space"
-                                                  " if multiple, Enter "
-                                                  "number "
-                                                  "corresponding to book(s) in"
-                                                  " list to add: ", 'red')).split()))
+                                                input(colored(
+                                                    "Which books would you like"
+                                                    " to add to your reading"
+                                                    " list? Separated with space"
+                                                    " if multiple, Enter "
+                                                    "number "
+                                                    "corresponding to book(s) in"
+                                                    " list to add: ",
+                                                    'red')).split()))
 
                     except ValueError:
-                        print(colored("Sorry. Please enter numbers corresponding to"
-                              " books in the list. \n", 'red'))
+                        print(colored(
+                            "Sorry. Please enter numbers corresponding to"
+                            " books in the list. \n", 'red'))
                         self.print_searched_books()
                         break
 
@@ -313,8 +361,9 @@ class BookApp:
                         if 1 <= num <= num_of_searched_books:
                             pass
                         else:
-                            print(colored("Sorry. Number(s) input is not one of the"
-                                  " options in list.", 'red'))
+                            print(colored(
+                                "Sorry. Number(s) input is not one of the"
+                                " options in list.", 'red'))
                             books_to_add = False
                             break
 
