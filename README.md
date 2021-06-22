@@ -8,7 +8,7 @@ Here is the key file in the project:
 
 ## Project Setup 
 
-In order to clone and run this repository, you will need to have Git and [Python 3.x](https://www.python.org/download/releases/3.0/). Then in the command line, you can do:  
+In order to clone and run this repository, you will need to have Git, [Python 3.x](https://www.python.org/download/releases/3.0/), and the [Python termcolor module](https://pypi.org/project/termcolor/). Then in the command line, you can do:  
 
 
 ```bash
@@ -16,6 +16,8 @@ In order to clone and run this repository, you will need to have Git and [Python
 git clone https://github.com/klever12/Search-Books
 # Go into the repository
 cd Search-Books
+# install the termcolor module using pip
+pip install termcolor
 # Run the bookapp.py script
 python3 bookapp.py
 ```
