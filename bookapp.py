@@ -1,5 +1,6 @@
 import json
 from urllib.request import urlopen
+from termcolor import colored
 
 
 class BookApp:
@@ -14,12 +15,12 @@ class BookApp:
     def start_app(self):
         """This method starts the application"""
 
-        print("Welcome to my book search app! \n")
+        print(colored("Welcome to my book search app! \n", 'red'))
 
         # Starts the application
         while self.app_quit is not True:
-            user_choice = input("Would you like to search for a book(b), "
-                                "see your reading list(r), or quit app(q)?\n") \
+            user_choice = input(colored("Would you like to search for a book(b), "
+                                "see your reading list(r), or quit app(q)?\n", 'red')) \
                 .strip()
 
             if user_choice == "B" or user_choice == "b":
@@ -35,9 +36,9 @@ class BookApp:
                 self.app_quit = True
 
             else:
-                print("Sorry. That was an invalid option.\n")
+                print(colored("Sorry. That was an invalid option.\n", 'red'))
 
-        print("Goodbye!")
+        print(colored("Goodbye!", 'red'))
 
     def get_reading_list(self):
         """This method returns the reading list"""
@@ -55,25 +56,25 @@ class BookApp:
         curr_reading_list = self.get_reading_list()
 
         if bool(curr_reading_list) is False:
-            print("Reading list is currently empty.\n")
+            print(colored("Reading list is currently empty.\n", 'blue'))
         else:
-            print("Here is your current reading list: \n")
+            print(colored("Here is your current reading list: \n", 'blue'))
             for x in curr_reading_list:
                 authors = ", ".join(curr_reading_list[x][1])
-                print(str(x) + "- Title: " + curr_reading_list[x][0] +
+                print(colored(str(x) + "- Title: " + curr_reading_list[x][0] +
                       ", Author(s): " + authors +
                       ", Publishing Company: " +
-                      curr_reading_list[x][2] + "\n")
+                      curr_reading_list[x][2] + "\n", 'blue'))
 
     def print_searched_books(self):
         curr_searched_books = self.get_searched_books()
 
-        print("Here are the searched books: \n")
+        print(colored("Here are the searched books: \n", 'blue'))
         for x in curr_searched_books:
             authors = ", ".join(curr_searched_books[x][1])
-            print(str(x) + "- Title: " + curr_searched_books[x][0] +
+            print(colored(str(x) + "- Title: " + curr_searched_books[x][0] +
                   ", Author(s): " + authors + ", Publishing Company: " +
-                  curr_searched_books[x][2] + "\n")
+                  curr_searched_books[x][2] + "\n", 'blue'))
 
     def search_books(self):
         """This method searches for books using the Google Books API"""
@@ -86,16 +87,17 @@ class BookApp:
 
         # start performing book search
         while searching_books:
-            user_choice = input("Would you like to search by title(t), "
+            user_choice = input(colored("Would you like to search by title(t), "
                                 "author(a), or publishing company(p)? Or "
-                                "would you like to cancel search(c)?\n") \
+                                "would you like to cancel search(c)?\n", 'red')) \
                 .strip()
 
             # search by title
             if user_choice == "T" or user_choice == "t":
                 search_term = "intitle:"
 
-                book_to_search = input("Enter title to search for: ").strip()
+                book_to_search = input(colored("Enter title to search for: ",
+                                               'red')).strip()
                 book_to_search = ' '.join(book_to_search.split())
                 book_to_search = book_to_search.replace(" ", "+")
 
@@ -104,7 +106,7 @@ class BookApp:
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print("Sorry. No books were found with that title. ")
+                    print(colored("Sorry. No books were found with that title. ", 'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -148,7 +150,8 @@ class BookApp:
             elif user_choice == "A" or user_choice == "a":
                 search_term = "inauthor:"
 
-                author_to_search = input("Enter author to search for: ")\
+                author_to_search = input(colored("Enter author to search for: "
+                                                 , 'red'))\
                     .strip()
                 author_to_search = ' '.join(author_to_search.split())
                 author_to_search = author_to_search.replace(" ", "+")
@@ -158,7 +161,7 @@ class BookApp:
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print("Sorry. No books were found with that title. ")
+                    print(colored("Sorry. No books were found with that title. ", 'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -202,7 +205,7 @@ class BookApp:
             elif user_choice == "P" or user_choice == "p":
                 search_term = "inpublisher:"
 
-                publisher_to_search = input("Enter publisher to search for: ")\
+                publisher_to_search = input(colored("Enter publisher to search for: ", 'red'))\
                     .strip()
                 publisher_to_search = ' '.join(publisher_to_search.split())
                 publisher_to_search = publisher_to_search.replace(" ", "+")
@@ -212,7 +215,7 @@ class BookApp:
                 book_data = json.load(resp)
 
                 if book_data['totalItems'] == 0:
-                    print("Sorry. No books were found with that title. ")
+                    print(colored("Sorry. No books were found with that title. ", 'red'))
                 else:
                     if book_data['totalItems'] < 5:
                         number_books_found = book_data['totalItems']
@@ -254,12 +257,12 @@ class BookApp:
 
             # cancel book search
             elif user_choice == "C" or user_choice == "c":
-                print("Book search canceled.\n")
+                print(colored("Book search canceled.\n", 'red'))
                 searching_books = False
 
             # user input was invalid
             else:
-                print("Sorry. That was an invalid option.\n")
+                print(colored("Sorry. That was an invalid option.\n", 'red'))
 
     def add_to_reading_list(self):
         """This method adds books the user chooses to the reading list"""
@@ -268,8 +271,8 @@ class BookApp:
 
         # start by asking user if they'd like to add to reading list
         while wants_to_add_books:
-            user_choice = input("Would you like to add any of these books to"
-                                " your reading list? \n Yes(y) or No(n): ")\
+            user_choice = input(colored("Would you like to add any of these books to"
+                                " your reading list? \n Yes(y) or No(n): ", 'red'))\
                 .strip()
 
             if user_choice == "Y" or user_choice == "y":
@@ -288,19 +291,19 @@ class BookApp:
                         num_of_reading_list = len(curr_reading_list) + 1
 
                     try:
-                        print("Note: Duplicates will be removed")
+                        print(colored("Note: Duplicates will be removed", 'red'))
                         books_to_add = list(map(int,
-                                            input("Which books would you like"
+                                            input(colored("Which books would you like"
                                                   " to add to your reading"
                                                   " list? Separated with space"
                                                   " if multiple, Enter "
                                                   "number "
                                                   "corresponding to book(s) in"
-                                                  " list to add: ").split()))
+                                                  " list to add: ", 'red')).split()))
 
                     except ValueError:
-                        print("Sorry. Please enter numbers corresponding to"
-                              " books in the list. \n")
+                        print(colored("Sorry. Please enter numbers corresponding to"
+                              " books in the list. \n", 'red'))
                         self.print_searched_books()
                         break
 
@@ -310,8 +313,8 @@ class BookApp:
                         if 1 <= num <= num_of_searched_books:
                             pass
                         else:
-                            print("Sorry. Number(s) input is not one of the"
-                                  " options in list.")
+                            print(colored("Sorry. Number(s) input is not one of the"
+                                  " options in list.", 'red'))
                             books_to_add = False
                             break
 
@@ -332,7 +335,7 @@ class BookApp:
 
             # user input was invalid
             else:
-                print("Sorry. That was an invalid option.\n")
+                print(colored("Sorry. That was an invalid option.\n", 'red'))
                 self.print_searched_books()
 
 
