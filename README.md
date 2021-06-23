@@ -2,7 +2,7 @@
 
 This command-line application allows users to search for books using the [Google Books API](https://developers.google.com/books). The user also has the option to add books to a local "Reading List."
 
-Here is the key file in the project: 
+Here are the key files in the project: 
 
 - `bookapp.py` - used to implement the command-line application and start the app.
 - `performbooksearch.py` - function used in the BookApp class that searches for books using the Google Books API
